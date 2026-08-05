@@ -1,15 +1,28 @@
 const bananaCursor = document.getElementById('banana-cursor');
+const bananaCursorEnabled = window.matchMedia('(min-width: 601px) and (hover: hover) and (pointer: fine)');
+const compactExperience = window.matchMedia('(max-width: 600px), (pointer: coarse)');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 document.addEventListener('mousemove', e => {
+    if (!bananaCursorEnabled.matches) return;
     bananaCursor.style.left = (e.pageX - 42) + 'px';
     bananaCursor.style.top = (e.pageY - 5) + 'px';
 });
 
 const introScreen = document.getElementById('intro-screen');
 const musique = document.getElementById('musique');
+const siteHeader = document.getElementById('site-header');
+const siteContent = document.getElementById('site-content');
 let onBoard = false;
 
 function enterSite() {
     introScreen.classList.add('hidden');
+    introScreen.setAttribute('aria-hidden', 'true');
+    document.body.classList.add('site-entered');
+    siteHeader.setAttribute('aria-hidden', 'false');
+    siteHeader.removeAttribute('inert');
+    siteContent.setAttribute('aria-hidden', 'false');
+    siteContent.removeAttribute('inert');
     musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
     onBoard = true;
 }
@@ -18,18 +31,24 @@ document.addEventListener('mousedown', () => {
     if (onBoard) {
         explosionDeConfettis();
     }
-    bananaCursor.style.scale = '0.9';
-    bananaCursor.style.transition = 'scale 0.1s';
+    if (bananaCursorEnabled.matches) {
+        bananaCursor.style.scale = '0.9';
+        bananaCursor.style.transition = 'scale 0.1s';
+    }
 });
 
 document.addEventListener('mouseup', () => {
+    if (!bananaCursorEnabled.matches) return;
     bananaCursor.style.scale = '1';
     bananaCursor.style.transition = 'scale 0.1s';
 });
 
 function explosionDeConfettis() {
+    if (reducedMotion.matches) return;
+
     const colors = ['#f94144', '#f3722c', '#f9c74f', '#90be6d', '#43aa8b', '#577590'];
-    for (let i = 0; i < 128; i++) {
+    const confettiCount = compactExperience.matches ? 48 : 128;
+    for (let i = 0; i < confettiCount; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
@@ -43,7 +62,8 @@ function explosionDeConfettis() {
 }
 
 let stars = [];
-for (let i = 0; i < 30; i++) {
+const starCount = reducedMotion.matches ? 0 : (compactExperience.matches ? 18 : 30);
+for (let i = 0; i < starCount; i++) {
     const star = document.createElement('div');
     star.className = 'star';
     star.style.top = Math.random() * 100 + 'vh';
@@ -57,18 +77,22 @@ let raveInterval = null;
 let raveOn = false;
 const body = document.body;
 const texte = document.getElementById('texte-bienvenue');
+const raveButton = document.getElementById('rave-button');
 let particulesRave = [];
 
 function toggleRaveMode() {
     if (!raveOn) {
         raveOn = true;
+        raveButton.setAttribute('aria-pressed', 'true');
+        raveButton.setAttribute('aria-label', 'Désactiver le mode rave');
         texte.classList.remove('bounce-normal');
         texte.classList.add('bounce-rainbow');
 
         stars.forEach(star => star.style.display = 'none');
 
         const couleurs = ['#ff6ec7', '#33ccff', '#ffff66', '#ff9966', '#cc66ff', '#66ff99'];
-        for (let i = 0; i < 50; i++) {
+        const particleCount = reducedMotion.matches ? 0 : (compactExperience.matches ? 24 : 50);
+        for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
             const size = Math.random() * 15 + 10;
@@ -82,7 +106,10 @@ function toggleRaveMode() {
             particulesRave.push(particle);
         }
 
-        raveInterval = setInterval(() => {
+        if (reducedMotion.matches) {
+            body.style.background = 'linear-gradient(135deg, #7b2cff, #ff4fa3)';
+            texte.style.color = '#fff36d';
+        } else raveInterval = setInterval(() => {
             const r = Math.floor(Math.random() * 256);
             const g = Math.floor(Math.random() * 256);
             const b = Math.floor(Math.random() * 256);
@@ -96,6 +123,8 @@ function toggleRaveMode() {
     } else {
         raveOn = false;
         clearInterval(raveInterval);
+        raveButton.setAttribute('aria-pressed', 'false');
+        raveButton.setAttribute('aria-label', 'Activer le mode rave');
         texte.classList.remove('bounce-rainbow');
         texte.classList.add('bounce-normal');
         texte.style.color = '';

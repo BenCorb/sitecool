@@ -2,12 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>corbelet.cool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Bienvenue sur le site festif de Ben Corb.">
+  <title>bencorb.com</title>
   <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 
-  <div id="intro-screen" class="intro-screen">
+  <div id="intro-screen" class="intro-screen" role="dialog" aria-modal="true" aria-label="Bienvenue">
     <button onclick="enterSite()" class="start-button">Entrer sur le site</button>
   </div>
 
@@ -15,13 +17,23 @@
     <source src="assets/audio/bensound-funkyelement.mp3" type="audio/mpeg">
   </audio>
 
-  <div class="bouncy-text bounce-normal" id="texte-bienvenue">Salut, bienvenue sur mon site !</div>
+  <header class="site-header" id="site-header" aria-hidden="true" inert>
+    <a class="site-brand" href="/" aria-label="Accueil de bencorb.com">bencorb.com</a>
+    <nav class="site-nav" aria-label="Navigation principale">
+      <a href="https://github.com/BenCorb" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="/projets">Projets</a>
+    </nav>
+  </header>
 
-  <div class="button-container">
-    <button onclick="toggleRaveMode()">💃 🪩 🕺</button>
-  </div>
+  <main class="site-content" id="site-content" aria-hidden="true" inert>
+    <h1 class="bouncy-text bounce-normal" id="texte-bienvenue">Salut, bienvenue sur mon site !</h1>
 
-  <div class="banana-cursor" id="banana-cursor"></div>
+    <div class="button-container">
+      <button type="button" onclick="toggleRaveMode()" aria-label="Activer le mode rave" aria-pressed="false" id="rave-button">💃 🪩 🕺</button>
+    </div>
+  </main>
+
+  <div class="banana-cursor" id="banana-cursor" aria-hidden="true"></div>
 
   <script src="js/index.js"></script>
 </body>
