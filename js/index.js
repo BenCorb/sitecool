@@ -13,6 +13,7 @@ const introScreen = document.getElementById('intro-screen');
 const musique = document.getElementById('musique');
 const siteHeader = document.getElementById('site-header');
 const siteContent = document.getElementById('site-content');
+const soundToggle = document.getElementById('sound-toggle');
 let onBoard = false;
 
 function enterSite() {
@@ -23,8 +24,24 @@ function enterSite() {
     siteHeader.removeAttribute('inert');
     siteContent.setAttribute('aria-hidden', 'false');
     siteContent.removeAttribute('inert');
+    soundToggle.setAttribute('aria-hidden', 'false');
+    soundToggle.removeAttribute('inert');
     musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
     onBoard = true;
+}
+
+function toggleSound() {
+    musique.muted = !musique.muted;
+    const isMuted = musique.muted;
+
+    soundToggle.textContent = isMuted ? '🔇' : '🔊';
+    soundToggle.setAttribute('aria-pressed', String(isMuted));
+    soundToggle.setAttribute('aria-label', isMuted ? 'Réactiver le son' : 'Couper le son');
+    soundToggle.title = isMuted ? 'Réactiver le son' : 'Couper le son';
+
+    if (!isMuted && musique.paused) {
+        musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
+    }
 }
 
 document.addEventListener('mousedown', () => {
@@ -98,10 +115,6 @@ function applyRavePalette(color) {
     const [r, g, b] = color;
 
     body.style.background = `rgb(${r}, ${g}, ${b})`;
-
-    document.querySelectorAll('button').forEach(btn => {
-        btn.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
-    });
 }
 
 function syncRaveHeaderWithBackground() {
@@ -115,8 +128,8 @@ function syncRaveHeaderWithBackground() {
     if (channels?.length === 3) {
         const currentBackground = channels.map(Math.round);
         const [headerR, headerG, headerB] = lightenColor(currentBackground);
-        siteHeader.style.background = `rgb(${headerR}, ${headerG}, ${headerB})`;
-        siteHeader.style.boxShadow = createRaveShadow(currentBackground);
+        body.style.setProperty('--glass-background', `rgba(${headerR}, ${headerG}, ${headerB}, 0.78)`);
+        body.style.setProperty('--glass-shadow', createRaveShadow(currentBackground));
     }
 
     raveAnimationFrame = requestAnimationFrame(syncRaveHeaderWithBackground);
@@ -130,8 +143,8 @@ function applyReducedMotionRavePalette() {
     const shadowBase = gradientStart.map((channel, index) => Math.round((channel + gradientEnd[index]) / 2));
 
     body.style.background = 'linear-gradient(135deg, #7b2cff, #ff4fa3)';
-    siteHeader.style.background = `linear-gradient(135deg, rgb(${lightStart.join(', ')}), rgb(${lightEnd.join(', ')}))`;
-    siteHeader.style.boxShadow = createRaveShadow(shadowBase);
+    body.style.setProperty('--glass-background', `linear-gradient(135deg, rgba(${lightStart.join(', ')}, 0.78), rgba(${lightEnd.join(', ')}, 0.78))`);
+    body.style.setProperty('--glass-shadow', createRaveShadow(shadowBase));
 }
 
 function toggleRaveMode() {
@@ -185,12 +198,8 @@ function toggleRaveMode() {
         texte.classList.add('bounce-normal');
         texte.style.color = '';
         body.style.background = '';
-        siteHeader.style.background = '';
-        siteHeader.style.boxShadow = '';
-
-        document.querySelectorAll("button").forEach(btn => {
-            btn.style.backgroundColor = '';
-        });
+        body.style.removeProperty('--glass-background');
+        body.style.removeProperty('--glass-shadow');
 
         particulesRave.forEach(p => p.remove());
         particulesRave = [];

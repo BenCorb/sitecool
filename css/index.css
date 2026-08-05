@@ -2,6 +2,11 @@
     box-sizing: border-box;
 }
 
+:root {
+    --glass-background: rgba(255, 255, 255, 0.78);
+    --glass-shadow: 0 8px 24px rgba(84, 46, 0, 0.12);
+}
+
 html,
 body {
     margin: 0;
@@ -32,8 +37,8 @@ body {
     justify-content: space-between;
     gap: 16px;
     padding: calc(12px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 12px max(20px, env(safe-area-inset-left));
-    background: rgba(255, 255, 255, 0.78);
-    box-shadow: 0 8px 24px rgba(84, 46, 0, 0.12);
+    background: var(--glass-background);
+    box-shadow: var(--glass-shadow);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     opacity: 0;
@@ -171,6 +176,60 @@ button:hover {
 
 button:active {
     scale: 0.95;
+}
+
+#rave-button,
+#sound-toggle {
+    background: var(--glass-background);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: color 0.3s, filter 0.2s, scale 0.3s;
+}
+
+#rave-button {
+    border-radius: 12px;
+}
+
+#rave-button:hover,
+#sound-toggle:hover {
+    background: var(--glass-background);
+    filter: brightness(1.05);
+}
+
+#rave-button:active,
+#sound-toggle:active {
+    filter: brightness(0.98);
+}
+
+.sound-toggle {
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 10;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1.35rem;
+    line-height: 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s ease, filter 0.2s, scale 0.3s;
+}
+
+.site-entered .sound-toggle {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .start-button {
@@ -311,6 +370,16 @@ button:active {
         min-height: 48px;
         padding: 14px 18px;
     }
+
+    .sound-toggle {
+        right: max(16px, env(safe-area-inset-right));
+        bottom: max(16px, env(safe-area-inset-bottom));
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 0;
+    }
 }
 
 @media (max-width: 600px), (hover: none), (pointer: coarse) {
@@ -333,6 +402,13 @@ button:active {
 
     button:active {
         scale: 0.97;
+    }
+
+    #rave-button:hover,
+    #rave-button:active,
+    #sound-toggle:hover,
+    #sound-toggle:active {
+        filter: none;
     }
 }
 
