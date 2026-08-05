@@ -51,6 +51,10 @@ body {
     pointer-events: auto;
 }
 
+.site-header.rave-active {
+    animation: rainbowHeader 2s infinite;
+}
+
 .site-brand,
 .site-nav a {
     color: #542e00;
@@ -143,6 +147,16 @@ button:focus-visible {
     66% { color: cyan; }
     83% { color: violet; }
     100% { color: red; }
+}
+
+@keyframes rainbowHeader {
+    0% { background-color: red; }
+    16% { background-color: orange; }
+    33% { background-color: yellow; }
+    50% { background-color: limegreen; }
+    66% { background-color: cyan; }
+    83% { background-color: violet; }
+    100% { background-color: red; }
 }
 
 .button-container {
@@ -360,5 +374,10 @@ button:active {
     .bouncy-text,
     .site-header {
         transform: none;
+    }
+
+    .site-header.rave-active {
+        animation: none !important;
+        background: #fff36d;
     }
 }

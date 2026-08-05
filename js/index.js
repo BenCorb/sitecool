@@ -85,6 +85,7 @@ function toggleRaveMode() {
         raveOn = true;
         raveButton.setAttribute('aria-pressed', 'true');
         raveButton.setAttribute('aria-label', 'Désactiver le mode rave');
+        siteHeader.classList.add('rave-active');
         texte.classList.remove('bounce-normal');
         texte.classList.add('bounce-rainbow');
 
@@ -125,6 +126,7 @@ function toggleRaveMode() {
         clearInterval(raveInterval);
         raveButton.setAttribute('aria-pressed', 'false');
         raveButton.setAttribute('aria-label', 'Activer le mode rave');
+        siteHeader.classList.remove('rave-active');
         texte.classList.remove('bounce-rainbow');
         texte.classList.add('bounce-normal');
         texte.style.color = '';
