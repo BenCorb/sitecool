@@ -10,63 +10,46 @@ document.addEventListener('mousemove', e => {
     bananaCursor.style.top = (e.clientY - 5) + 'px';
 });
 
-const introScreen = document.getElementById('intro-screen');
 const musique = document.getElementById('musique');
-const siteHeader = document.getElementById('site-header');
-const siteContent = document.getElementById('site-content');
 const soundToggle = document.getElementById('sound-toggle');
-let onBoard = document.body.dataset.page === 'projects';
 
-function enterSite(shouldPlayMusic = true) {
-    introScreen.classList.add('hidden');
-    introScreen.setAttribute('aria-hidden', 'true');
-    document.body.classList.add('site-entered');
-    siteHeader.setAttribute('aria-hidden', 'false');
-    siteHeader.removeAttribute('inert');
-    siteContent.setAttribute('aria-hidden', 'false');
-    siteContent.removeAttribute('inert');
-    soundToggle.setAttribute('aria-hidden', 'false');
-    soundToggle.removeAttribute('inert');
-    if (shouldPlayMusic) {
-        musique.muted = false;
-        musique.volume = 1;
-        musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
-    } else {
-        musique.muted = true;
-        soundToggle.textContent = '🔇';
-        soundToggle.setAttribute('aria-pressed', 'true');
-        soundToggle.setAttribute('aria-label', 'Lancer la musique');
-        soundToggle.title = 'Lancer la musique';
+function updateSoundToggle(isPlaying) {
+    if (!soundToggle) return;
+
+    soundToggle.textContent = isPlaying ? '🔊' : '🔇';
+    soundToggle.setAttribute('aria-pressed', String(isPlaying));
+    soundToggle.setAttribute('aria-label', isPlaying ? 'Mettre la musique en pause' : 'Lancer la musique');
+    soundToggle.title = isPlaying ? 'Mettre la musique en pause' : 'Lancer la musique';
+}
+
+async function toggleSound() {
+    if (!musique || !soundToggle) return;
+
+    if (!musique.paused) {
+        musique.pause();
+        return;
     }
-    onBoard = true;
+
+    musique.muted = false;
+    musique.volume = 1;
 
     try {
-        sessionStorage.setItem('sitecool:entered', 'true');
+        await musique.play();
     } catch (error) {
-        // L’expérience reste fonctionnelle si le stockage est indisponible.
+        updateSoundToggle(false);
+        console.warn('Impossible de lire la musique :', error);
     }
 }
 
-function toggleSound() {
-    if (!musique || !soundToggle) return;
-
-    musique.muted = !musique.muted;
-    const isMuted = musique.muted;
-
-    soundToggle.textContent = isMuted ? '🔇' : '🔊';
-    soundToggle.setAttribute('aria-pressed', String(isMuted));
-    soundToggle.setAttribute('aria-label', isMuted ? 'Réactiver le son' : 'Couper le son');
-    soundToggle.title = isMuted ? 'Réactiver le son' : 'Couper le son';
-
-    if (!isMuted && musique.paused) {
-        musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
-    }
+if (musique && soundToggle) {
+    musique.addEventListener('play', () => updateSoundToggle(true));
+    musique.addEventListener('pause', () => updateSoundToggle(false));
 }
 
 document.addEventListener('mousedown', event => {
     const isInteractiveClick = event.target.closest('a, button');
 
-    if (onBoard && !isInteractiveClick && !document.body.classList.contains('is-transitioning')) {
+    if (!isInteractiveClick && !document.body.classList.contains('is-transitioning')) {
         explosionDeConfettis();
     }
     if (bananaCursorEnabled.matches) {
@@ -229,8 +212,4 @@ function toggleRaveMode() {
 
         stars.forEach(star => star.style.display = 'block');
     }
-}
-
-if (document.body.dataset.page === 'home' && document.documentElement.dataset.vortexArrival === 'to-home') {
-    enterSite(false);
 }

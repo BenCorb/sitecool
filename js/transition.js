@@ -154,9 +154,9 @@
         if (music && soundToggle) {
             music.pause();
             music.volume = 1;
-            music.muted = true;
+            music.muted = false;
             soundToggle.textContent = '🔇';
-            soundToggle.setAttribute('aria-pressed', 'true');
+            soundToggle.setAttribute('aria-pressed', 'false');
             soundToggle.setAttribute('aria-label', 'Lancer la musique');
             soundToggle.title = 'Lancer la musique';
         }

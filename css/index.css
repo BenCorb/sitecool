@@ -752,30 +752,6 @@ button:active {
     pointer-events: auto;
 }
 
-.start-button {
-    padding: 20px 30px;
-    font-size: 1.5rem;
-    color: #fff;
-    background-color: #ff5722;
-    border: none;
-    border-radius: 8px;
-    cursor: none;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 0 10px #ff5722, 0 0 20px #ff5722, 0 0 30px #ff5722;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s, scale 0.3s;
-}
-
-.start-button:hover {
-    background-color: #e64a19;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 0 15px #e64a19, 0 0 25px #e64a19, 0 0 35px #e64a19;
-    scale: 1.05;
-}
-
-.start-button:active {
-    scale: 0.95;
-}
-
-
 .confetti {
     position: fixed;
     width: 10px;
@@ -829,28 +805,6 @@ button:active {
 @keyframes float {
     0% { transform: translateY(0) scale(1); }
     100% { transform: translateY(-100vh) scale(0.5) rotate(360deg); }
-}
-
-.intro-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    padding: calc(20px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-    background-color: #000000ee; /* Fond sombre */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Au-dessus de tout */
-    transition: opacity 0.5s ease, visibility 0.5s ease;
-}
-
-.intro-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
 }
 
 @media (max-width: 760px) {
@@ -987,7 +941,6 @@ button:active {
     }
 
     button:hover,
-    .start-button:hover,
     .site-nav a:hover,
     .project-card:hover,
     .project-card:focus-within {
