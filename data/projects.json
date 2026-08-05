@@ -1,0 +1,15 @@
+[
+  {
+    "name": "CinéGacha",
+    "description": "Jeu navigateur de gachapon pour collectionner des cartes à l'éffigie de films et échanger ses doublons.",
+    "url": "https://cinegacha.app",
+    "githubUrl": "https://github.com/BenCorb/cinegacha",
+    "image": "../assets/images/cinegacha.webp"
+  },
+  {
+    "name": "Gestion gite",
+    "description": "Application de gestion d'un gîte avec site vitrine et interface de gestion (résevervations, planing, bilan comptable, etc.).",
+    "url": "https://closdesvignes.com",
+    "image": "../assets/images/gite.webp"
+  }
+]

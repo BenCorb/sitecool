@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Les projets de Ben Corb, recrachés tout droit du vortex.">
+  <title>Projets — bencorb.com</title>
+  <script>
+    try {
+      const vortexArrival = JSON.parse(sessionStorage.getItem('sitecool:vortex-arrival'));
+      const normalizePath = pathname => `${pathname.replace(/\/index\.html$/, '').replace(/\/$/, '') || ''}/`;
+      const currentPath = normalizePath(window.location.pathname);
+
+      if (vortexArrival?.to === currentPath && Date.now() - vortexArrival.createdAt < 10000) {
+        document.documentElement.dataset.vortexArrival = vortexArrival.direction;
+      }
+    } catch (error) {}
+  </script>
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body class="project-page site-entered" data-page="projects">
+  <div class="page-scene" id="page-scene">
+    <audio id="vortex-sound" preload="auto">
+      <source src="../assets/audio/vortex-whoosh.mp3" type="audio/mpeg">
+    </audio>
+
+    <header class="site-header" id="site-header">
+      <a class="site-brand" href="../index.html" data-vortex-link aria-label="Retour à l’accueil de bencorb.com">bencorb.com</a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <a href="https://github.com/BenCorb" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="index.html" aria-current="page">Projets</a>
+      </nav>
+    </header>
+
+    <main class="projects-content" id="projects-content">
+      <section class="projects-hero" aria-labelledby="projects-title">
+        <h1 id="projects-title">mes projets</h1>
+      </section>
+
+      <section class="projects-grid" id="projects-grid" data-source="../data/projects.json" aria-label="Liste des projets" aria-live="polite"></section>
+
+      <noscript>
+        <p class="projects-message">active javascript pour charger les projets depuis le fichier json.</p>
+      </noscript>
+
+      <a class="return" href="../index.html" data-vortex-link>
+        retour
+      </a>
+    </main>
+
+    <div class="effects-layer" id="effects-layer" aria-hidden="true"></div>
+    <div class="banana-cursor" id="banana-cursor" aria-hidden="true"></div>
+  </div>
+
+  <div class="vortex-transition" id="vortex-transition" aria-hidden="true">
+    <div class="vortex-glow"></div>
+    <div class="vortex-ring"></div>
+    <div class="vortex-core"></div>
+  </div>
+
+  <script src="../js/index.js"></script>
+  <script src="../js/projects.js"></script>
+  <script src="../js/transition.js"></script>
+</body>
+</html>

@@ -1,12 +1,13 @@
 const bananaCursor = document.getElementById('banana-cursor');
+const effectsLayer = document.getElementById('effects-layer') || document.body;
 const bananaCursorEnabled = window.matchMedia('(min-width: 601px) and (hover: hover) and (pointer: fine)');
 const compactExperience = window.matchMedia('(max-width: 600px), (pointer: coarse)');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 document.addEventListener('mousemove', e => {
-    if (!bananaCursorEnabled.matches) return;
-    bananaCursor.style.left = (e.pageX - 42) + 'px';
-    bananaCursor.style.top = (e.pageY - 5) + 'px';
+    if (!bananaCursor || !bananaCursorEnabled.matches) return;
+    bananaCursor.style.left = (e.clientX - 42) + 'px';
+    bananaCursor.style.top = (e.clientY - 5) + 'px';
 });
 
 const introScreen = document.getElementById('intro-screen');
@@ -14,9 +15,9 @@ const musique = document.getElementById('musique');
 const siteHeader = document.getElementById('site-header');
 const siteContent = document.getElementById('site-content');
 const soundToggle = document.getElementById('sound-toggle');
-let onBoard = false;
+let onBoard = document.body.dataset.page === 'projects';
 
-function enterSite() {
+function enterSite(shouldPlayMusic = true) {
     introScreen.classList.add('hidden');
     introScreen.setAttribute('aria-hidden', 'true');
     document.body.classList.add('site-entered');
@@ -26,11 +27,29 @@ function enterSite() {
     siteContent.removeAttribute('inert');
     soundToggle.setAttribute('aria-hidden', 'false');
     soundToggle.removeAttribute('inert');
-    musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
+    if (shouldPlayMusic) {
+        musique.muted = false;
+        musique.volume = 1;
+        musique.play().catch(err => console.warn('Impossible de lire la musique :', err));
+    } else {
+        musique.muted = true;
+        soundToggle.textContent = '🔇';
+        soundToggle.setAttribute('aria-pressed', 'true');
+        soundToggle.setAttribute('aria-label', 'Lancer la musique');
+        soundToggle.title = 'Lancer la musique';
+    }
     onBoard = true;
+
+    try {
+        sessionStorage.setItem('sitecool:entered', 'true');
+    } catch (error) {
+        // L’expérience reste fonctionnelle si le stockage est indisponible.
+    }
 }
 
 function toggleSound() {
+    if (!musique || !soundToggle) return;
+
     musique.muted = !musique.muted;
     const isMuted = musique.muted;
 
@@ -44,8 +63,10 @@ function toggleSound() {
     }
 }
 
-document.addEventListener('mousedown', () => {
-    if (onBoard) {
+document.addEventListener('mousedown', event => {
+    const isInteractiveClick = event.target.closest('a, button');
+
+    if (onBoard && !isInteractiveClick && !document.body.classList.contains('is-transitioning')) {
         explosionDeConfettis();
     }
     if (bananaCursorEnabled.matches) {
@@ -73,7 +94,7 @@ function explosionDeConfettis() {
         confetti.style.top = '-25px';
         confetti.style.width = confetti.style.height = (Math.random() * 10 + 5) + 'px';
         confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
-        document.body.appendChild(confetti);
+        effectsLayer.appendChild(confetti);
         setTimeout(() => confetti.remove(), 4000);
     }
 }
@@ -86,7 +107,7 @@ for (let i = 0; i < starCount; i++) {
     star.style.top = Math.random() * 100 + 'vh';
     star.style.left = Math.random() * 100 + 'vw';
     star.style.animationDuration = (1 + Math.random() * 2) + 's';
-    document.body.appendChild(star);
+    effectsLayer.appendChild(star);
     stars.push(star);
 }
 
@@ -148,6 +169,8 @@ function applyReducedMotionRavePalette() {
 }
 
 function toggleRaveMode() {
+    if (!raveButton || !texte) return;
+
     if (!raveOn) {
         raveOn = true;
         raveButton.setAttribute('aria-pressed', 'true');
@@ -169,7 +192,7 @@ function toggleRaveMode() {
             particle.style.top = Math.random() * window.innerHeight + 'px';
             particle.style.backgroundColor = couleurs[Math.floor(Math.random() * couleurs.length)];
             particle.style.animationDuration = (5 + Math.random() * 10) + 's';
-            document.body.appendChild(particle);
+            effectsLayer.appendChild(particle);
             particulesRave.push(particle);
         }
 
@@ -206,4 +229,8 @@ function toggleRaveMode() {
 
         stars.forEach(star => star.style.display = 'block');
     }
+}
+
+if (document.body.dataset.page === 'home' && document.documentElement.dataset.vortexArrival === 'to-home') {
+    enterSite(false);
 }

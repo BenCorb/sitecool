@@ -5,38 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Bienvenue sur le site festif de Ben Corb.">
   <title>bencorb.com</title>
+  <script>
+    try {
+      const vortexArrival = JSON.parse(sessionStorage.getItem('sitecool:vortex-arrival'));
+      const normalizePath = pathname => `${pathname.replace(/\/index\.html$/, '').replace(/\/$/, '') || ''}/`;
+      const currentPath = normalizePath(window.location.pathname);
+
+      if (vortexArrival?.to === currentPath && Date.now() - vortexArrival.createdAt < 10000) {
+        document.documentElement.dataset.vortexArrival = vortexArrival.direction;
+      } else {
+        const navigationEntry = performance.getEntriesByType('navigation')[0];
+        const isReturningWithHistory = navigationEntry?.type === 'back_forward';
+
+        if (currentPath === '/' && isReturningWithHistory && sessionStorage.getItem('sitecool:entered') === 'true') {
+          document.documentElement.dataset.vortexArrival = 'to-home';
+        }
+      }
+    } catch (error) {}
+  </script>
   <link rel="stylesheet" href="css/index.css">
 </head>
-<body>
+<body data-page="home">
 
   <div id="intro-screen" class="intro-screen" role="dialog" aria-modal="true" aria-label="Bienvenue">
     <button onclick="enterSite()" class="start-button">Entrer sur le site</button>
   </div>
 
-  <audio id="musique" loop>
-    <source src="assets/audio/bensound-funkyelement.mp3" type="audio/mpeg">
-  </audio>
+  <div class="page-scene" id="page-scene">
+    <audio id="musique" loop>
+      <source src="assets/audio/bensound-funkyelement.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="vortex-sound" preload="auto">
+      <source src="assets/audio/vortex-whoosh.mp3" type="audio/mpeg">
+    </audio>
 
-  <header class="site-header" id="site-header" aria-hidden="true" inert>
-    <a class="site-brand" href="/" aria-label="Accueil de bencorb.com">bencorb.com</a>
-    <nav class="site-nav" aria-label="Navigation principale">
-      <a href="https://github.com/BenCorb" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="/projets">Projets</a>
-    </nav>
-  </header>
+    <header class="site-header" id="site-header" aria-hidden="true" inert>
+      <a class="site-brand" href="index.html" aria-label="Accueil de bencorb.com">bencorb.com</a>
+      <nav class="site-nav" aria-label="Navigation principale">
+        <a href="https://github.com/BenCorb" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="projets/index.html" data-vortex-link>Projets</a>
+      </nav>
+    </header>
 
-  <main class="site-content" id="site-content" aria-hidden="true" inert>
-    <h1 class="bouncy-text bounce-normal" id="texte-bienvenue">salut, bienvenue sur mon site !</h1>
+    <main class="site-content" id="site-content" aria-hidden="true" inert>
+      <h1 class="bouncy-text bounce-normal" id="texte-bienvenue">salut, bienvenue sur mon site !</h1>
 
-    <div class="button-container">
-      <button type="button" onclick="toggleRaveMode()" aria-label="Activer le mode rave" aria-pressed="false" id="rave-button">💃 🪩 🕺</button>
-    </div>
-  </main>
+      <div class="button-container">
+        <button type="button" onclick="toggleRaveMode()" aria-label="Activer le mode rave" aria-pressed="false" id="rave-button">💃 🪩 🕺</button>
+      </div>
+    </main>
 
-  <button type="button" class="sound-toggle" id="sound-toggle" onclick="toggleSound()" aria-label="Couper le son" aria-pressed="false" aria-hidden="true" title="Couper le son" inert>🔊</button>
+    <button type="button" class="sound-toggle" id="sound-toggle" onclick="toggleSound()" aria-label="Couper le son" aria-pressed="false" aria-hidden="true" title="Couper le son" inert>🔊</button>
 
-  <div class="banana-cursor" id="banana-cursor" aria-hidden="true"></div>
+    <div class="effects-layer" id="effects-layer" aria-hidden="true"></div>
+    <div class="banana-cursor" id="banana-cursor" aria-hidden="true"></div>
+  </div>
+
+  <div class="vortex-transition" id="vortex-transition" aria-hidden="true">
+    <div class="vortex-glow"></div>
+    <div class="vortex-ring"></div>
+    <div class="vortex-core"></div>
+  </div>
 
   <script src="js/index.js"></script>
+  <script src="js/transition.js"></script>
 </body>
 </html>
