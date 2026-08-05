@@ -74,18 +74,71 @@ for (let i = 0; i < starCount; i++) {
 }
 
 let raveInterval = null;
+let raveAnimationFrame = null;
 let raveOn = false;
 const body = document.body;
 const texte = document.getElementById('texte-bienvenue');
 const raveButton = document.getElementById('rave-button');
 let particulesRave = [];
 
+function lightenColor([r, g, b], amount = 0.2) {
+    return [r, g, b].map(channel => Math.round(channel + (255 - channel) * amount));
+}
+
+function darkenColor([r, g, b], amount = 0.55) {
+    return [r, g, b].map(channel => Math.round(channel * amount));
+}
+
+function createRaveShadow(color) {
+    const [r, g, b] = darkenColor(color);
+    return `0 8px 24px rgba(${r}, ${g}, ${b}, 0.38)`;
+}
+
+function applyRavePalette(color) {
+    const [r, g, b] = color;
+
+    body.style.background = `rgb(${r}, ${g}, ${b})`;
+
+    document.querySelectorAll('button').forEach(btn => {
+        btn.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
+    });
+}
+
+function syncRaveHeaderWithBackground() {
+    if (!raveOn || reducedMotion.matches) return;
+
+    const channels = getComputedStyle(body).backgroundColor
+        .match(/\d+(?:\.\d+)?/g)
+        ?.slice(0, 3)
+        .map(Number);
+
+    if (channels?.length === 3) {
+        const currentBackground = channels.map(Math.round);
+        const [headerR, headerG, headerB] = lightenColor(currentBackground);
+        siteHeader.style.background = `rgb(${headerR}, ${headerG}, ${headerB})`;
+        siteHeader.style.boxShadow = createRaveShadow(currentBackground);
+    }
+
+    raveAnimationFrame = requestAnimationFrame(syncRaveHeaderWithBackground);
+}
+
+function applyReducedMotionRavePalette() {
+    const gradientStart = [123, 44, 255];
+    const gradientEnd = [255, 79, 163];
+    const lightStart = lightenColor(gradientStart);
+    const lightEnd = lightenColor(gradientEnd);
+    const shadowBase = gradientStart.map((channel, index) => Math.round((channel + gradientEnd[index]) / 2));
+
+    body.style.background = 'linear-gradient(135deg, #7b2cff, #ff4fa3)';
+    siteHeader.style.background = `linear-gradient(135deg, rgb(${lightStart.join(', ')}), rgb(${lightEnd.join(', ')}))`;
+    siteHeader.style.boxShadow = createRaveShadow(shadowBase);
+}
+
 function toggleRaveMode() {
     if (!raveOn) {
         raveOn = true;
         raveButton.setAttribute('aria-pressed', 'true');
         raveButton.setAttribute('aria-label', 'Désactiver le mode rave');
-        siteHeader.classList.add('rave-active');
         texte.classList.remove('bounce-normal');
         texte.classList.add('bounce-rainbow');
 
@@ -108,29 +161,32 @@ function toggleRaveMode() {
         }
 
         if (reducedMotion.matches) {
-            body.style.background = 'linear-gradient(135deg, #7b2cff, #ff4fa3)';
+            applyReducedMotionRavePalette();
             texte.style.color = '#fff36d';
-        } else raveInterval = setInterval(() => {
-            const r = Math.floor(Math.random() * 256);
-            const g = Math.floor(Math.random() * 256);
-            const b = Math.floor(Math.random() * 256);
-            body.style.background = `rgb(${r}, ${g}, ${b})`;
+        } else {
+            const updateRaveColors = () => applyRavePalette([
+                Math.floor(Math.random() * 256),
+                Math.floor(Math.random() * 256),
+                Math.floor(Math.random() * 256)
+            ]);
 
-            document.querySelectorAll("button").forEach(btn => {
-            btn.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
-            });
-
-        }, 200);
+            updateRaveColors();
+            syncRaveHeaderWithBackground();
+            raveInterval = setInterval(updateRaveColors, 200);
+        }
     } else {
         raveOn = false;
         clearInterval(raveInterval);
+        cancelAnimationFrame(raveAnimationFrame);
+        raveAnimationFrame = null;
         raveButton.setAttribute('aria-pressed', 'false');
         raveButton.setAttribute('aria-label', 'Activer le mode rave');
-        siteHeader.classList.remove('rave-active');
         texte.classList.remove('bounce-rainbow');
         texte.classList.add('bounce-normal');
         texte.style.color = '';
         body.style.background = '';
+        siteHeader.style.background = '';
+        siteHeader.style.boxShadow = '';
 
         document.querySelectorAll("button").forEach(btn => {
             btn.style.backgroundColor = '';

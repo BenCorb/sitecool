@@ -33,7 +33,6 @@ body {
     gap: 16px;
     padding: calc(12px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 12px max(20px, env(safe-area-inset-left));
     background: rgba(255, 255, 255, 0.78);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.58);
     box-shadow: 0 8px 24px rgba(84, 46, 0, 0.12);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -49,10 +48,6 @@ body {
     visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
-}
-
-.site-header.rave-active {
-    animation: rainbowHeader 2s infinite;
 }
 
 .site-brand,
@@ -147,16 +142,6 @@ button:focus-visible {
     66% { color: cyan; }
     83% { color: violet; }
     100% { color: red; }
-}
-
-@keyframes rainbowHeader {
-    0% { background-color: red; }
-    16% { background-color: orange; }
-    33% { background-color: yellow; }
-    50% { background-color: limegreen; }
-    66% { background-color: cyan; }
-    83% { background-color: violet; }
-    100% { background-color: red; }
 }
 
 .button-container {
@@ -376,8 +361,4 @@ button:active {
         transform: none;
     }
 
-    .site-header.rave-active {
-        animation: none !important;
-        background: #fff36d;
-    }
 }
