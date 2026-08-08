@@ -166,7 +166,7 @@ button:focus-visible {
 .projects-grid {
     display: flex;
     flex-direction: column;
-    gap: clamp(28px, 4vw, 46px);
+    gap: clamp(36px, 4vw, 54px);
 }
 
 .project-card {
@@ -813,7 +813,7 @@ button:active {
         padding-left: max(18px, env(safe-area-inset-left));
     }
 
-    .projects-grid { gap: 32px; }
+    .projects-grid { gap: 40px; }
 
     .project-card {
         grid-template-columns: 1fr;
@@ -898,7 +898,7 @@ button:active {
         font-size: clamp(2.55rem, 14vw, 4.2rem);
     }
 
-    .projects-grid { gap: 32px; }
+    .projects-grid { gap: 40px; }
 
     .project-card {
         grid-template-columns: 1fr;
