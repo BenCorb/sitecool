@@ -10,6 +10,7 @@
     "name": "Gestion gite",
     "description": "Application de gestion d'un gîte avec site vitrine et interface de gestion (résevervations, planing, bilan comptable, etc.).",
     "url": "https://closdesvignes.com",
+    "githubUrl": "https://github.com/BenCorb/gestion-gite",
     "image": "../assets/images/gite.webp"
   }
 ]
